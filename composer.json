@@ -1,0 +1,5 @@
+{
+  "autoload": {
+    "psr-4": {"Bixie\\IdealClient\\": "vendor/bixie/idealclient/src/"}
+  }
+}

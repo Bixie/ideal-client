@@ -17,9 +17,7 @@
 	<div class="uk-block">
 		<div class="uk-container uk-container-center">
 
-			<div class="uk-text-center">
-				<?= $output ?>
-			</div>
+			<?= $output ?>
 
 		</div>
 	</div>

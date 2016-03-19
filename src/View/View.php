@@ -7,8 +7,6 @@ class View {
 
 	protected $template;
 
-	protected $output = '';
-
 	protected $root;
 
 	/**
@@ -19,13 +17,18 @@ class View {
 		$this->root = $root;
 	}
 
-	public function render () {
-		$output = $this->output;
-		if (!file_exists($this->root . $this->template)) {
-			echo "No template found";
-			return;
+	public function render ($template = null, $vars = []) {
+		if ($template) {
+			$this->setTemplate($template);
 		}
-		include $this->root . $this->template;
+		extract($vars);
+		if (!file_exists($this->root . $this->template)) {
+			return "No template found";
+		}
+		ob_start();
+		require $this->root . $this->template;
+
+		return ob_get_clean();
 	}
 
 	/**
@@ -40,26 +43,8 @@ class View {
 	 * @return View
 	 */
 	public function setTemplate ($template) {
-		$this->template = '/' . ltrim($template, '/');
+		$this->template = '/views/' . ltrim($template, '/') . '.php';
 		return $this;
 	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getOutput () {
-		return $this->output;
-	}
-
-	/**
-	 * @param mixed $output
-	 * @return View
-	 */
-	public function setOutput ($output) {
-		$this->output = $output;
-		return $this;
-	}
-
-
 
 }

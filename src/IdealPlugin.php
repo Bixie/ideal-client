@@ -8,11 +8,13 @@ use Bixie\IdealClient\IdealClient;
 use Bixie\IdealPlugin\View\View;
 
 class IdealPlugin {
-
+	/**
+	 * @var IdealClient
+	 */
 	protected $client;
-
-	protected $view;
-
+	/**
+	 * @var array
+	 */
 	protected $config;
 
 	/**
@@ -22,9 +24,11 @@ class IdealPlugin {
 	public function __construct (array $config) {
 		$this->config = $config;
 		$this->client = new IdealClient($config);
-		$this->view = (new View($config['root']))->setTemplate('views/template.php');
 	}
 
+	/**
+	 * @param string $task
+	 */
 	public function run ($task = 'setup') {
 		$task = isset($_GET['task']) ? $_GET['task'] : $task;
 		switch ($task) {
@@ -44,8 +48,11 @@ class IdealPlugin {
 
 					try {
 
-						$result = $this->client->doSetup($transaction->getOrderId(), $transaction->getOrderCode());
-						$this->renderOutput($result['output']);
+						$result = $this->client->doSetup($transaction);
+						if (is_array($result['issuerlist'])) {
+							$result['issuerlist'] = $this->getView()->render('issuerlist', $result['issuerlist']);
+						}
+						$this->renderOutput($this->getView()->render('form', $result->toArray()));
 
 					} catch (IdealClientException $e) {
 						$this->renderOutput($e->getMessage());
@@ -58,12 +65,23 @@ class IdealPlugin {
 				}
 
 				break;
+			case 'transaction':
+
+				try {
+
+					$result = $this->client->doTransaction();
+					$this->renderOutput($this->getView()->render('form', $result->toArray()));
+
+				} catch (IdealClientException $e) {
+					$this->renderOutput($e->getMessage());
+				}
+				break;
 			case 'return':
 
 				try {
 
 					$result = $this->client->doReturn();
-					$this->renderOutput($result['output']);
+					$this->renderOutput($this->getView()->render('form', $result->toArray()));
 
 				} catch (IdealClientException $e) {
 					$this->renderOutput($e->getMessage());
@@ -76,8 +94,18 @@ class IdealPlugin {
 
 	}
 
+	/**
+	 * @return View
+	 */
+	public function getView () {
+		return new View($this->config['root']);
+	}
+
+	/**
+	 * @param $output
+	 */
 	public function renderOutput ($output) {
-		$this->view->setOutput($output)->render();
+		echo $this->getView()->render('template', compact('output'));
 	}
 
 }

@@ -1,5 +1,8 @@
 {
   "autoload": {
-    "psr-4": {"Bixie\\IdealClient\\": "vendor/bixie/idealclient/src/"}
+    "psr-4": {
+      "Bixie\\IdealPlugin\\": "src/",
+      "Bixie\\IdealClient\\": "vendor/bixie/idealclient/src/"
+    }
   }
 }

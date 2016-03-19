@@ -54,7 +54,10 @@
 						{
 							if($this->aSettings['TEST_MODE'])
 							{
-								idealcheckout_output('<code>' . var_export($oIssuerRequest->getErrors(), true) . '</code>');
+								return [
+									'data' => [],
+									'output' => '<code>' . var_export($oIssuerRequest->getErrors(), true) . '</code>'
+								];
 							}
 							else
 							{
@@ -80,8 +83,11 @@
 								{
 									$sHtml .= '<p><a href="' . htmlentities($this->oRecord['transaction_failure_url']) . '">terug naar de website</a></p>';
 								}
-								
-								idealcheckout_output($sHtml);
+
+								return [
+									'data' => [],
+									'output' => $sHtml
+								];
 							}
 						}
 
@@ -112,7 +118,10 @@
 				}
 			}
 
-			idealcheckout_output($sHtml);
+			return [
+				'data' => [],
+				'output' => $sHtml
+			];
 		}
 
 
@@ -177,7 +186,10 @@
 						{
 							if($this->aSettings['TEST_MODE'])
 							{
-								idealcheckout_output('<code>' . var_export($oTransactionRequest->getErrors(), true) . '</code>');
+								return [
+									'data' => [],
+									'output' => '<code>' . var_export($oTransactionRequest->getErrors(), true) . '</code>'
+								];
 							}
 							else
 							{
@@ -209,8 +221,11 @@
 ' . var_export($oTransactionRequest->getErrors(), true) . '
 
 -->';
-								
-								idealcheckout_output($sHtml);
+
+								return [
+									'data' => [],
+									'output' => $sHtml
+								];
 							}
 						}
 
@@ -239,7 +254,10 @@
 				}
 			}
 
-			idealcheckout_output($sHtml);
+			return [
+				'data' => [],
+				'output' => $sHtml
+			];
 		}
 
 
@@ -291,7 +309,10 @@
 						{
 							if($this->aSettings['TEST_MODE'])
 							{
-								idealcheckout_output('<code>' . var_export($oStatusRequest->getErrors(), true) . '</code>');
+								return [
+									'data' => [],
+									'output' => '<code>' . var_export($oStatusRequest->getErrors(), true) . '</code>'
+								];
 							}
 							else
 							{
@@ -324,7 +345,10 @@
 
 -->';
 
-								idealcheckout_output($sHtml);
+								return [
+									'data' => [],
+									'output' => $sHtml
+								];
 							}
 						}
 
@@ -399,14 +423,20 @@
 				}
 			}
 
-			idealcheckout_output($sHtml);
+			return [
+				'data' => [],
+				'output' => $sHtml
+			];
 		}
 
 
 		// Catch report
 		public function doReport()
 		{
-			idealcheckout_output('Invalid report request.');
+			return [
+				'data' => [],
+				'output' => 'Invalid report request.'
+			];
 		}
 
 
@@ -472,6 +502,9 @@
 				$sHtml .= '<br>Er zijn geen openstaande transacties gevonden.';
 			}
 
-			idealcheckout_output('<p>' . $sHtml . '</p><p>&nbsp;</p><p><input type="button" value="Venster sluiten" onclick="javascript: window.close();"></p>');
+			return [
+				'data' => [],
+				'output' => '<p>' . $sHtml . '</p><p>&nbsp;</p><p><input type="button" value="Venster sluiten" onclick="javascript: window.close();"></p>'
+			];
 		}
 	}

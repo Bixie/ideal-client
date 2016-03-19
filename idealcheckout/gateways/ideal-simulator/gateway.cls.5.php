@@ -65,7 +65,10 @@
 				}
 			}
 
-			idealcheckout_output($sHtml);
+			return [
+				'data' => [],
+				'output' => $sHtml
+			];
 		}
 
 
@@ -155,6 +158,9 @@
 				}
 			}
 
-			idealcheckout_output($sHtml);
+			return [
+				'data' => [],
+				'output' => $sHtml
+			];
 		}
 	}

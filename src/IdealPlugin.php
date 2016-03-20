@@ -1,10 +1,11 @@
 <?php
 
-namespace Bixie\IdealPlugin;
 
+namespace Bixie\IdealPlugin;
 
 use Bixie\IdealClient\Exception\IdealClientException;
 use Bixie\IdealClient\IdealClient;
+use Bixie\IdealClient\IdealClientTransaction;
 use Bixie\IdealPlugin\View\View;
 
 class IdealPlugin {
@@ -24,6 +25,12 @@ class IdealPlugin {
 	public function __construct (array $config) {
 		$this->config = $config;
 		$this->client = new IdealClient($config);
+
+		$this->client->setUpdateCallback(function ($transaction) {
+		   	/** @var IdealClientTransaction $transaction */
+			//phone home! create request back to server
+			$status = $transaction->getTransactionStatus();
+		});
 	}
 
 	/**

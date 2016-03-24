@@ -45,11 +45,18 @@ class IdealPlugin {
 				if (isset($_GET['d']) && $_GET['d'] != '') {
 					$dataset = json_decode(base64_decode($_GET['d']), true);
 				}
+				$notify_url = 'post_callback.php';
+				$return_url = $dataset['return_url'];
 				if (count($dataset)) {
 					$transaction = $this->client->createTransaction([
 						'order_id' => $dataset['orderID'],
 						'transaction_amount' => $dataset['PackagePrice'],
 						'transaction_description' => sprintf('Order %s: %s', $dataset['orderID'], $dataset['PackageDescr']),
+						'transaction_notify_url' => $notify_url,
+						'transaction_payment_url' => $return_url . '?orderID=' . $dataset['orderID'],
+						'transaction_success_url' => $return_url . '?orderID=' . $dataset['orderID'] . '&status=SUCCESS',
+						'transaction_pending_url' => $return_url . '?orderID=' . $dataset['orderID'] . '&status=PENDING',
+						'transaction_failure_url' => $return_url . '?orderID=' . $dataset['orderID'] . '&status=FAILURE',
 						'order_params' => $dataset
 					]);
 
@@ -59,7 +66,11 @@ class IdealPlugin {
 						if (is_array($result['issuerlist'])) {
 							$result['issuerlist'] = $this->getView()->render('issuerlist', $result['issuerlist']);
 						}
-						$this->renderOutput($this->getView()->render('form', $result->toArray()));
+						$this->renderOutput($this->getView()->render('form', array_merge([
+							'order_id' => $transaction->getOrderId(),
+							'transaction_amount' => $transaction->getTransactionAmount(),
+							'transaction_description' => $transaction->getTransactionDescription()
+						], $result->toArray())));
 
 					} catch (IdealClientException $e) {
 						$this->renderOutput($e->getMessage());

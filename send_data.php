@@ -15,11 +15,12 @@ $data_array['email']         = 'fred.bloggs@example.email';
 $data_array['PackageNr']     = '6';
 $data_array['PackageDescr']  = 'junior registration';
 $data_array['PackagePrice']  = '60.00';
+$data_array['return_url']  	 = 'send_data.php';
 
 $output            = json_encode($data_array);
 $data_string       = 'd='.base64_encode($output);
 
-$targetURL         = 'index.php';
+$targetURL         = 'handler.php';
 $targetURLplusData = $targetURL.'?'.$data_string;
 
 ?>

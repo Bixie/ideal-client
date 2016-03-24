@@ -6,6 +6,7 @@ namespace Bixie\IdealPlugin;
 use Bixie\IdealClient\Exception\IdealClientException;
 use Bixie\IdealClient\IdealClient;
 use Bixie\IdealClient\IdealClientTransaction;
+use Bixie\IdealClient\Utils\Http;
 use Bixie\IdealPlugin\View\View;
 
 class IdealPlugin {
@@ -29,7 +30,15 @@ class IdealPlugin {
 		$this->client->setUpdateCallback(function ($transaction) {
 		   	/** @var IdealClientTransaction $transaction */
 			//phone home! create request back to server
-			$status = $transaction->getTransactionStatus();
+			$order_params = $transaction->getOrderParams();
+			$token = md5($order_params['orderID'] . $order_params['PackagePrice'] . $this->config['shared_pass']);
+			Http\idealcheckout_doHttpRequest(
+				$transaction->getTransactionNotifyUrl(),
+				array_merge([
+						'token' => $token,
+						'transaction' => $transaction->toArray([], ['order_params'])
+					], $order_params)
+			);
 		});
 	}
 
@@ -45,7 +54,7 @@ class IdealPlugin {
 				if (isset($_GET['d']) && $_GET['d'] != '') {
 					$dataset = json_decode(base64_decode($_GET['d']), true);
 				}
-				$notify_url = 'post_callback.php';
+				$notify_url = $this->config['notify_url'];
 				$return_url = $dataset['return_url'];
 				if (count($dataset)) {
 					$transaction = $this->client->createTransaction([
